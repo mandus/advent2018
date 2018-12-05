@@ -27,7 +27,8 @@
   (let* ((len (length l))
         (lp (process-to-string l))
         (lplen (length lp)))
-    (if (<= lplen len)
+
+    (if (< lplen len)
       (process-line lp)
       lp)))
 
@@ -38,13 +39,13 @@
           do
           (let* ((c (aref uc idx))
                  (lc (remove (char-upcase c) (remove c l)))
-                 (lpc (process-to-string lc))
+                 (lpc (process-line lc))
                  (lpclen (length lpc)))
             (if (< lpclen curmin)
               (setf curl lpc))
             (if (< lpclen curmin)
               (setf curmin lpclen))
-            (format t "now (~A) [~A]: ~A -- ~A~%" c lc lpc curmin)
+            ;(format t "now (~A) [~A]: ~A -- ~A~%" c lc lpc curmin)
             ))
     curl))
 
@@ -58,9 +59,10 @@
            (len (length lp)))
 
       (if flag 
-       (format t "Line: ~A.~%" l))
+        (progn
+        (format t "Line: ~A.~%" l)
+        (format t "Uniq: ~A~%" uniqc)))
 
-      (format t "Uniq: ~A~%" uniqc)
       (format t "Line: ~A~%" lp)
       (format t "Length: ~A~%" len)))
 
