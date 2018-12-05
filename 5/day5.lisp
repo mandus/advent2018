@@ -33,35 +33,33 @@
       lp)))
 
 (defun process (l uc maxl)
-  (let ((curmin maxl)
-        (curl l))
-    (loop for idx from 0 to (- (length uc) 1)
+  (let ((cm maxl)
+        (cl l))
+    (loop for c across uc 
           do
-          (let* ((c (aref uc idx))
-                 (lc (remove (char-upcase c) (remove c l)))
+          (let* ((lc (remove (char-upcase c) (remove c l)))
                  (lpc (process-line lc))
                  (lpclen (length lpc)))
-            (if (< lpclen curmin)
-              (setf curl lpc))
-            (if (< lpclen curmin)
-              (setf curmin lpclen))
-            ;(format t "now (~A) [~A]: ~A -- ~A~%" c lc lpc curmin)
-            ))
-    curl))
+
+            (if (< lpclen cm)
+              (progn
+                (setf cl lpc)
+                (setf cm lpclen)))))
+    cl))
 
 
 (defun main() 
     (let* ((l (read-line))
            (maxl (length l))
-           (flag 'nil)
            (uniqc (remove-duplicates (string-downcase l)))
            (lp (process l uniqc maxl))
-           (len (length lp)))
+           (len (length lp))
+           (flag 'nil))
 
       (if flag 
         (progn
-        (format t "Line: ~A.~%" l)
-        (format t "Uniq: ~A~%" uniqc)))
+          (format t "Line: ~A.~%" l)
+          (format t "Uniq: ~A~%" uniqc)))
 
       (format t "Line: ~A~%" lp)
       (format t "Length: ~A~%" len)))
