@@ -1,5 +1,10 @@
 ; Advent of code 2018 - Åsmund Ødegård
 
+(defvar *lowercase*
+  (map 'string #'code-char (loop
+                             for c from (char-code #\a) to (char-code #\z)
+                             collect c)))
+
 (defun process-internal (l)
   (let ((flag 'nil))
 
@@ -32,10 +37,10 @@
       (process-line lp)
       lp)))
 
-(defun process (l uc maxl)
+(defun process (l maxl)
   (let ((cm maxl)
         (cl l))
-    (loop for c across uc 
+    (loop for c across *lowercase* 
           do
           (let* ((lc (remove (char-upcase c) (remove c l)))
                  (lpc (process-line lc))
@@ -51,15 +56,13 @@
 (defun main() 
     (let* ((l (read-line))
            (maxl (length l))
-           (uniqc (remove-duplicates (string-downcase l)))
-           (lp (process l uniqc maxl))
+           (lp (process l maxl))
            (len (length lp))
            (flag 'nil))
 
       (if flag 
         (progn
-          (format t "Line: ~A.~%" l)
-          (format t "Uniq: ~A~%" uniqc)))
+          (format t "Line: ~A.~%" l)))
 
       (format t "Line: ~A~%" lp)
       (format t "Length: ~A~%" len)))
