@@ -12,18 +12,19 @@
                    (if (< idx (length l))
                      (string (aref l idx)))))
 
-      (loop for idx from 0 to (- (length l) 1)
+      (loop for idx from 0 below (length l) 
             when
             (let* ((c (gidx idx))
                    (n (gidx (1+ idx)))
                    (lc (string-downcase c))
                    (ln (string-downcase n)))
               (if flag
-                (psetf flag 'nil)
-                (if (not (and (string= lc ln) 
-                              (not (string= c n))))
+                (psetf flag 'nil) ; skip this entry, but unset flag for next
+                (if (and (string= lc ln) 
+                              (not (string= c n)))
+                  (psetf flag 't)
                   c
-                  (psetf flag 't)))) collect it))))
+                  ))) collect it))))
 
 (defun process-to-string (l)
   (format nil "~{~A~}" (process-internal l)))
@@ -33,9 +34,9 @@
         (lp (process-to-string l))
         (lplen (length lp)))
 
-    (if (< lplen len)
-      (process-line lp)
-      lp)))
+    (if (>= lplen len)
+      lp
+      (process-line lp))))
 
 (defun process (l maxl)
   (let ((cm maxl)
