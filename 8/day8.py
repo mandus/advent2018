@@ -15,7 +15,7 @@ class node:
 
     def nodesum(s):
         if s.header[0]:
-            return sum([s.children[idx-1].nodesum() for idx in s.metadata if idx < s.header[0]])
+            return sum([s.children[idx-1].nodesum() for idx in s.metadata if idx <= s.header[0]])
         else:
             return sum(s.metadata)
 
