@@ -38,10 +38,10 @@ class point:
 
 def boundingbox(points):
     return [
-        min(p.x() for p in points),
-        max(p.x() for p in points),
-        min(p.y() for p in points),
-        max(p.y() for p in points)]
+        min(p[0] for p in points),
+        max(p[0] for p in points),
+        min(p[1] for p in points),
+        max(p[1] for p in points)]
 
 
 def draw_points(points, c):
@@ -49,7 +49,7 @@ def draw_points(points, c):
     pos_x = [x for (x, y) in pos]
     pos_y = [y for (x, y) in pos]
     plt.plot(pos_x, pos_y, 'ro')
-    bb = [110, 200, 125, 160]
+    bb = [120, 200, 125, 160]
     plt.axis(bb)
     plt.show()
 
