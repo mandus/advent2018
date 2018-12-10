@@ -10,6 +10,13 @@ class node:
         s.next = nn
         s.prev = pn
 
+    def rotate(s, i):
+        if i == 0:
+            return s
+        tmp = s.next if i > 0 else s.prev
+        direction = 1 if i > 0 else -1
+        return tmp.rotate(i-direction)
+
     def __repr__(s):
         return '%s (%s) %s' % (s.prev.val, s.val, s.next.val)
 
@@ -37,35 +44,42 @@ def showall(base, mark):
     return ''.join(show)
 
 
+def popout(n):
+    n.prev.next = n.next
+    n.next.prev = n.prev
+    return n.next
+
+
+def insertnew(cur, val):
+    link = cur.next
+    cur.next = node(val, link, cur)
+    link.prev = cur.next
+    return cur.next
+
+
 def main(fn, mul=1):
     players, lastmarble = read_line(fn)
     lastmarble = lastmarble*int(mul)
 
     root = node(0, None, None)
-    cur = node(1, root, root)
-    root.next = cur
-    root.prev = cur
+    root.next = root
+    root.prev = root
+    cur = root
 
-    next_marble = 2
-    cur_player = 2
+    next_marble = 1
+    cur_player = 1
     scores = {}
 
     while next_marble <= lastmarble:
         if next_marble % 23 == 0:
             # follow links 7 steps back
-            for i in range(7):
-                cur = cur.prev
+            cur = cur.rotate(-7)
             scores[cur_player] = scores.get(cur_player, 0) + next_marble + cur.val
-            cur.prev.next = cur.next
-            cur.next.prev = cur.prev
-            cur = cur.next
+            cur = popout(cur)
         else:
-            # insert new
+            # skip one forward
             cur = cur.next
-            link = cur.next
-            cur.next = node(next_marble, link, cur)
-            link.prev = cur.next
-            cur = cur.next
+            cur = insertnew(cur, next_marble)
 
         cur_player += 1 % players
         if cur_player > players:
