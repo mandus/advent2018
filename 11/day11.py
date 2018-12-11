@@ -54,17 +54,14 @@ def main(inp, mr=300):
     # part 2 improved
     isz = np.dtype(int).itemsize
     maxmax = 0
-    maxsize = 0
     for size in range(1, mr+1):
         patches = npl.stride_tricks.as_strided(fg, shape=(mr-size+1, mr-size+1, size, size), strides=2*(mr*isz, isz))
-        sizemax = patches.sum(axis=(-1, -2)).ravel().max()
+        windows = patches.sum(axis=(-1, -2))
+        sizemax = windows.ravel().max()
         if sizemax > maxmax:
             maxmax = sizemax
-            maxsize = size
-
-    # now that we know the block-size, find the index
-    subgrids = subgridfu(fg, mr, maxsize)
-    print(max(subgrids, key=lambda x: x[2]), maxsize)
+            location = np.where(windows == maxmax)
+            print(maxmax, ':', location[0][0]+1, location[1][0]+1, size)
 
 
 if __name__ == '__main__':
