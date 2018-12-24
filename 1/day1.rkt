@@ -25,7 +25,7 @@
       (reverse numbers)
       (read-next-line-list file (cons (string->number line) numbers)))))
 
-(define (read-by-line-to-list file)
+(define (read-lines->list file)
   (read-next-line-list file null))
 
 (define (accumulate-numbers numlist acc seen)
@@ -41,9 +41,8 @@
         (accumulate-numbers (rest numlist) (+ acc (first numlist)) seen)))))
 
 (define (sum-numbers)
-  (let ((numbers (call-with-input-file "input.txt"  read-by-line-to-list))
+  (let ((numbers (call-with-input-file "input.txt"  read-lines->list))
         (seen (make-hash)))
-
     (define (loop-till-done state)
       (if (cdr state)
         (car state)
@@ -54,3 +53,22 @@
     (loop-till-done (cons 0 #f))))
 
 (printf "part 2: ~a~%" (sum-numbers))
+
+;; Part 1 with folding, and convenience-function from std.lib
+(printf "part 1 w/fold: ~a~%"
+        (for/fold 
+          ([acc 0])
+          ([i (file->list "input.txt")])
+          (+ acc i)))
+
+;; Part 2 with folding
+(printf "part 2 w/fold: ~a~%"
+        (for/fold ([seen (set)] 
+                   [acc 0]
+                   #:result acc)
+          ([i (in-cycle (file->list "input.txt"))]
+           #:break (set-member? seen acc))
+          (let ([next (+ acc i)])
+            (values (set-add seen acc)  ;; add previous to set; need to check in next iter
+                    next))))
+
