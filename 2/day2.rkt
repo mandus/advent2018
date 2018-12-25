@@ -12,16 +12,57 @@
       (if (member 2 hash-vals) 1 0)
       (if (member 3 hash-vals) 1 0))))
 
-(define (checksum)
+(define (checksum lines)
   (let-values ([(dupe trip) 
                (for/fold ([dupe 0]
                           [trip 0])
-                 ([line (file->lines "input.txt")])
+                 ([line lines ])
                  (let-values ([(d t) (check-line line)])
                    (values 
                      (+ dupe d ) 
                      (+ trip t))))])
    (* dupe trip)))
 
-;; Part 1 - day2
-(displayln (checksum))
+(define (close-lines f s)
+  (let ((diff (for/fold ([diff 0])
+                ([elf (string->list f)]
+                 [els (string->list s)])
+                (if (equal? elf els)
+                  diff
+                  (+ diff 1)))))
+    (if (> diff 1) 
+      #f 
+      #t)))
+
+(define (remove-diff f s) 
+  (let ((word (for/fold ([word null])
+                ([elf (string->list f)]
+                 [els (string->list s)])
+                (if (equal? elf els)
+                  (cons elf word)
+                  word))))
+    (list->string (reverse word))))
+
+
+(define (find-close lines) 
+  (let-values ([(first second) 
+                (for/fold ([first null]
+                           [second null])
+                  ([line lines]
+                   #:break (and (not (null? first)) (not (null? second))))
+                  (if (null? first)
+                    (values line null)
+                    (if (close-lines first line)
+                      (values first line)
+                      (values line null))))])
+    (remove-diff first second)))
+
+(define (run-it)
+ (let ((lines (sort (file->lines "input.txt") string<?)))
+   ;; Part 1 - day2
+   (displayln (checksum lines))
+   ;; Part 2 - day 2
+   (displayln (find-close lines))
+   ))
+
+(run-it)
