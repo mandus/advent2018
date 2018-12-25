@@ -43,6 +43,14 @@
                   word))))
     (list->string (reverse word))))
 
+;; Better differ - from subreddit
+(define (deltaword f s)
+  (for/fold ([word ""])
+    ([elf (in-string f)]
+     [els (in-string s)])
+    (if (equal? elf els)
+      (~a word elf)
+      word)))
 
 (define (find-close lines) 
   (let-values ([(first second) 
@@ -55,7 +63,7 @@
                     (if (close-lines first line)
                       (values first line)
                       (values line null))))])
-    (remove-diff first second)))
+    (deltaword first second)))
 
 (define (run-it)
  (let ((lines (sort (file->lines "input.txt") string<?)))
