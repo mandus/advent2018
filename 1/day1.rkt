@@ -35,7 +35,7 @@
     ;; Else, set the new accumulator in dict as 'true, pop off and add next value from
     ;; list and recurse
     (let ()
-      (hash-set*! seen acc #t)
+      (hash-set! seen acc #t)
       (if (empty? numlist)
         (cons acc #f)
         (accumulate-numbers (rest numlist) (+ acc (first numlist)) seen)))))
